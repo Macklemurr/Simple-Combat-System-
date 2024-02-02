@@ -1,14 +1,22 @@
+import random
 from random import randint
 
+# work on making a true random d4 dice roll for damage
 # Dice
-d20 = randint(0,20)
-d6 = randint(0,6)
-d3 = randint(0,3)
+d20 = random.randint(1,20)
+d6 = random.randint(1,6)
+d4 = random.randint(1,4)
 
-player_name = input("Name your adventurer: ")
+name = str(input("Name your adventurer: "))
+
+enemy_titles = {
+    "title": [ "shy", "wild", "insane", "blood hungry"],
+}
+
+enemies = [ 'goblin','orc','kobold','beastman' ]
 
 class Player:
-    def __init__(self, name: str, hp=10, dmg=d3, sp=1):
+    def __init__(self, name: str, hp=10, sp=1):
         """
         hp - health point
         dmg - damage
@@ -17,65 +25,137 @@ class Player:
         """
         self.name = name
         self.hp = hp
-        self.dmg = dmg
         self.sp = sp
     # The player attacks the goblin and reduces the goblin health 
     def attack(self):
+        damage_dealt = random.randint(1,4)
+        self.dmg = damage_dealt
+        print(f"You dealt {self.dmg} damage\n")
         enemy.hp -= self.dmg
         return enemy.hp
 
-        
 class Enemy:
-    def __init__(self, name="Wild Goblin", hp=5, dmg=d3, sp=2):
+    def __init__(self, name: str, title: str, hp=5,sp=2):
         #health is hp
         self.name = name
+        self.title = title
         self.hp = hp
-        self.dmg = dmg
         self.sp = sp
+
+    def modifiers():
+        if enemy.title == 'wild':
+            print('ok')
     # The goblin attacks the player and reduces the players health
     def attack(self):
-        player.hp -= self.dmg 
+        damage_dealt = random.randint(1,4)
+        enemy.dmg = damage_dealt
+        print(f"\nThe {enemy.name} attacked you for {enemy.dmg}\n")
+        player.hp -= enemy.dmg 
         return player.hp
 
 # if the players sp is > than the enemy then the player would attack first
 # else the enemy would attack first then the player would attack next
-    
-def turn_order():
-    if player.sp > enemy.sp:
-        print("You go first !")
-        player.attack()
-        print(f"Enemy HP Left: {enemy.hp}")
-        enemy.attack()
-        print(f"Your HP Left: {player.hp}")
 
-    else:
-        print("You go second :(")
-        enemy.attack()
-        print(f"Your HP Left: {player.hp}")
+def diffculty_modifiers():
+    if enemy.title == 'wild':
+        enemy.hp += 2
+    elif enemy.title == 'insane':
+        enemy.sp += 2
+        print(enemy.sp)
+    elif enemy.title == 'blood hungry':
+        enemy.hp += 5
+        enemy.sp += 4
+        print(enemy.sp)
+    
+def post_battle():
+    choice_made = False
+
+    print(f"Number of battles won: {victories}")
+
+    print(f"After a Long Battle, the Brave Adventurer settles down...\n")
+    while choice_made == False:
+        selection = input("\nMake a choice (1)-Rest (2)-Battle (3)-Scavenge: ")
+        match selection:
+            case "1":
+                print("You feel well rested...\n",f"\nEntering Battle Mode\n")
+                player.hp = 10
+                enemy = Enemy(enemies[randint(0,3)], enemy_titles["title"][randint(0,3)])
+                diffculty_modifiers()
+                print(f"You have encountered a {enemy.title} {enemy.name}")
+                choice_made = True
+            case "2":
+                print("Nothing is here yet....")
+            case "3":
+                print("Nothing is here yet...")
+            case other:
+                print("Incorrect input")
+
+def turn_order():
+
+    if player.sp > enemy.sp:
         player.attack()
+        enemy.attack()
+        if player.hp <= 0:
+            print("Game Over")
+            game_over = True
+            return game_over
         print(f"Enemy HP Left: {enemy.hp}")
+        print(f"Your HP Left: {player.hp}\n")
+    else:
+        enemy.attack()
+        player.attack()
+        if player.hp <= 0:
+            game_over = True
+            return game_over
+        print(f"Your HP Left: {player.hp}")
+        print(f"Enemy HP Left: {enemy.hp}")
+
+
 
 # Defines the player and goblin
 
-player = Player(player_name)
-enemy = Enemy()
+player = Player(name)
+enemy = Enemy(enemies[randint(0,3)], enemy_titles["title"][randint(0,3)])
+diffculty_modifiers()
 
 # Main Game loop
 
 game_over = False
-
+victories = 0
 # Begin combat sequence
-
-print(f"You've encountered a {enemy.name}")
-
+print(f"\nBrave Adventurer {player.name} has set forth on an adventure\n",
+    "As the Brave Adventurer set out for their journey\n")
+print(f"the Brave Adventurer encountered a {enemy.title} {enemy.name}")
+print(f"Your HP Left: {player.hp}")
+print(f"Enemy HP Left: {enemy.hp}")
+# Infinite while loop bug idk why lol
 while not game_over:
-    # Introduces the enemy
-    turn_order()
+    # Determine enemy title and modifies the default corresponding
+    # to the enemy title 
+    selection = input(f"\nMake a choice (1)-Attack (2)-Defend (3)-View Stats: ")
+    match selection:
+        case "1":
+            # This might not work if 
+            turn_order()
+        case "2":
+            health_gained = randint(1,3)
+            print(f"\nYou gained {health_gained} HP!")
+            player.hp += health_gained
+            enemy.attack()
+            print(f"\nYour Health: {player.hp}")
+        case "3":
+            print(f"\nHP: {player.hp}")
+            print(f"SP: {player.sp}")
+        case other:
+            print("Incorrect input")
     # if player's health get less than 0 then game over next turn
     if player.hp <= 0:
-        print("Game Over")
+        print(f"The Brave Adventurer {player.name} has met with a fatal demise")
         game_over = True
     elif enemy.hp <= 0:
-        print("You have defeated the enemy!")
-        game_over = True
+        print(f"\nBrave Adventurer {player.name} defeated the {enemy.name}!")
+        enemy.hp = 5 
+        victories += 1
+        post_battle()
+
 
