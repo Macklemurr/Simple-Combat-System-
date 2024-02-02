@@ -1,12 +1,6 @@
 import random
 from random import randint
 
-# work on making a true random d4 dice roll for damage
-# Dice
-d20 = random.randint(1,20)
-d6 = random.randint(1,6)
-d4 = random.randint(1,4)
-
 name = str(input("Name your adventurer: "))
 
 enemy_titles = {
@@ -91,27 +85,30 @@ def post_battle():
                 print("Incorrect input")
 
 def turn_order():
-
     if player.sp > enemy.sp:
         player.attack()
+        check_win_loss()
+        if victory == True: 
+            pass
         enemy.attack()
-        if player.hp <= 0:
-            print("Game Over")
-            game_over = True
-            return game_over
         print(f"Enemy HP Left: {enemy.hp}")
         print(f"Your HP Left: {player.hp}\n")
     else:
         enemy.attack()
+        check_win_loss()
         player.attack()
-        if player.hp <= 0:
-            game_over = True
-            return game_over
         print(f"Your HP Left: {player.hp}")
         print(f"Enemy HP Left: {enemy.hp}")
-
-
-
+def check_win_loss():
+    if player.hp <= 0:
+        print(f"The Brave Adventurer {player.name} has met with a fatal demise")
+        game_over = True
+        return game_over
+    elif enemy.hp <= 0:
+        print(f"\nBrave Adventurer {player.name} defeated the {enemy.name}!")
+        enemy.hp = 5 
+        victory = True
+        return victory
 # Defines the player and goblin
 
 player = Player(name)
@@ -122,6 +119,7 @@ diffculty_modifiers()
 
 game_over = False
 victories = 0
+
 # Begin combat sequence
 print(f"\nBrave Adventurer {player.name} has set forth on an adventure\n",
     "As the Brave Adventurer set out for their journey\n")
@@ -137,6 +135,7 @@ while not game_over:
         case "1":
             # This might not work if 
             turn_order()
+            post_battle()
         case "2":
             health_gained = randint(1,3)
             print(f"\nYou gained {health_gained} HP!")
@@ -149,13 +148,6 @@ while not game_over:
         case other:
             print("Incorrect input")
     # if player's health get less than 0 then game over next turn
-    if player.hp <= 0:
-        print(f"The Brave Adventurer {player.name} has met with a fatal demise")
-        game_over = True
-    elif enemy.hp <= 0:
-        print(f"\nBrave Adventurer {player.name} defeated the {enemy.name}!")
-        enemy.hp = 5 
-        victories += 1
-        post_battle()
+
 
 
