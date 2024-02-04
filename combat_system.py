@@ -24,7 +24,7 @@ class Player:
     # The player attacks the goblin and reduces the goblin health 
     def attack(self):
         damage_dealt = random.randint(1,4)
-        print(f"You dealt {damage_dealt} damage\n")
+        print(f"\nYou dealt {damage_dealt} damage\n")
         enemy.receive_damage(damage_dealt)
     
     def death_check(self):
@@ -51,7 +51,6 @@ class Enemy:
     
     def receive_damage(self, damage_dealt):
         self.hp -= damage_dealt
-
         
     def reset_stats(self):
         self.hp = 5 
@@ -79,15 +78,6 @@ def enemy_death_check():
         return victory
         
 # Modifies the enemy class stats based on the title of the enemy
-    
-def d20_roll():
-    pass
-
-def player_goes_first():
-    pass
-
-def enemy_goes_first():
-    pass
 def post_battle():
     choice_made = False
     
@@ -127,10 +117,12 @@ def turn_order():
     if the players sp is > than the enemy then the player would attack first
     else the enemy would attack first then the player would attack next
 
-    if the enemy health is not less than or equal to 0 it will break out of the loop and 
+    if the enemy health is not less than or equal to 0 it will break out of the loop 
+
+    I'm using pokemon rules when it comes to the speed, if the speed equals then a d20 will roll and determine who attacks first, at complete random.
+    the higher the speed determines who go first
     """
     while victory == False:
-        print(f"player HP: {player.hp}", f"Enemy HP : {enemy.hp}")
         if player.sp > enemy.sp:
             player.attack()
             enemy_death_check()
@@ -154,8 +146,6 @@ def turn_order():
         elif player.sp == enemy.sp:
             player_d20_roll = random.randint(1,20)
             enemy_d20_roll = random.randint(1,20)
-            print(f"player roll: {player_d20_roll}")
-            print(f"enemy roll: {enemy_d20_roll}")
             if player_d20_roll > enemy_d20_roll:
                 player.attack()
                 enemy_death_check()
@@ -195,6 +185,7 @@ print(f"Your HP Left: {player.hp}")
 print(f"Enemy HP Left: {enemy.hp}")
 # Main Game Loop
 while not game_over:
+    victory = False # I need this here so battles will loop after winning, DO NOT REMOVE
     selection = input(f"\nMake a choice (1)-Attack (2)-Defend (3)-View Stats: ")
     match selection:
         case "1":
