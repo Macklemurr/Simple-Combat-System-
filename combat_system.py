@@ -77,6 +77,7 @@ def enemy_death_check():
     if enemy.hp <= 0:
         victory = True
         return victory
+        
 # Modifies the enemy class stats based on the title of the enemy
     
 def d20_roll():
@@ -164,6 +165,7 @@ def turn_order():
                     print(f"Your HP Left: {player.hp}")
                     print(f"Enemy HP Left: {enemy.hp}")
                     break
+                break
             elif enemy_d20_roll > player_d20_roll:
                 enemy.attack()
                 player_death_check()
@@ -173,6 +175,7 @@ def turn_order():
                     print(f"Your HP Left: {player.hp}")
                     print(f"Enemy HP Left: {enemy.hp}")
                     break
+                break
 
 # Initializes the player and enemy
 
